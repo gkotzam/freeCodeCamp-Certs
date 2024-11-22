@@ -31,15 +31,15 @@ app.post('/api/shorturl', (req, res, next) => {
     const url = new URL(req.body.url);
     if (url.protocol === 'https:' || url.protocol === 'http:'){
       // valid url
-      let index = urls.findIndex( value => value === url.origin.toString());
+      let index = urls.findIndex( value => value === req.body.url);
       if ( index === -1){
         // url does not exist, save url
         index = urls.length;
-        urls.push(url.origin);
-        res.json({original_url: url.origin, short_url: index});
+        urls.push(req.body.url);
+        res.json({original_url: req.body.url, short_url: index});
       } else {
         // url exists
-        res.json({original_url: url.origin, short_url: index});
+        res.json({original_url: req.body.url, short_url: index});
       }
     } else {
       res.json({error: 'Invalid URL'});  
