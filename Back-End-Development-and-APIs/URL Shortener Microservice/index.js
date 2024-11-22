@@ -29,19 +29,23 @@ app.post('/api/shorturl', (req, res, next) => {
   try {
     // check url
     const url = new URL(req.body.url);
-    // valid url
-    let index = urls.findIndex( value => value === url.origin.toString());
-    if ( index === -1){
-      // url does not exist, save url
-      index = urls.length;
-      urls.push(url.origin);
-      res.json({original_url: url.origin, short_url: index});
+    if (url.protocol === 'https:' || url.protocol === 'http:'){
+      // valid url
+      let index = urls.findIndex( value => value === url.origin.toString());
+      if ( index === -1){
+        // url does not exist, save url
+        index = urls.length;
+        urls.push(url.origin);
+        res.json({original_url: url.origin, short_url: index});
+      } else {
+        // url exists
+        res.json({original_url: url.origin, short_url: index});
+      }
     } else {
-      // url exists
-      res.json({original_url: url.origin, short_url: index});
+      res.json({error: 'Invalid URL'});  
     }
   } catch (err) {
-    res.json({error: 'invalid url'});
+    res.json({error: 'Invalid URL'});
   }
 });
 
@@ -55,6 +59,7 @@ app.get('/api/shorturl/:shortUrl', (req, res, next) => {
     res.json({error: 'invalid url'});
   }
 });
+
 
 
 
