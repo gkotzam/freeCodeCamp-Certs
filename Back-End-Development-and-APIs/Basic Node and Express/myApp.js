@@ -1,11 +1,20 @@
 let express = require('express');
 let path = require('path');
 require('dotenv').config();
+let bodyParser = require('body-parser');
 
 
 let app = express();
 
 app.use('/public', express.static(path.join(__dirname,'public')));
+app.use(bodyParser.urlencoded({extended: false}));
+
+app.post('/name', (req, res, next) => {
+    console.log('test');
+    console.log(req.body);
+    res.json({message: "ok"});
+});
+
 
 app.use( (req, res, next) => {
     const method = req.method;
@@ -36,10 +45,22 @@ app.get('/now', function (req, res, next){
     res.json({time: req.time});
 });
 
+app.get('/:word/echo', (req, res, next) => {
+    const word = req.params.word;
+    res.json({echo: word});
+});
 
+app.get('/name', (req, res, next) => {
+    const first = req.query.first;
+    const last = req.query.last;
+    res.json({name: first + ' ' + last});
+});
 
-
-
+app.post('/name', (req, res, next) => {
+    const first = req.body.first;
+    const last = req.body.last;
+    res.json({name: first + ' ' + last});
+});
 
 
 
